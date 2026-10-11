@@ -31,9 +31,10 @@ export class InventoryOverlay extends Phaser.Scene {
     close.on('pointerdown', () => this.close());
 
     this.render();
-    state.on((ev) => {
+    const unsub = state.on((ev) => {
       if (ev === 'inventory_changed') this.render();
     });
+    this.events.once('shutdown', () => unsub());
   }
 
   private clearContent() {

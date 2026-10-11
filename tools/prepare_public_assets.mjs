@@ -4,15 +4,12 @@
 // public/ so `vite build` ships a playable production bundle.
 // (O modo dev NÃO precisa disso: o vite dev serve os assets da raiz.)
 
-import { cpSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const list = JSON.parse(
-  // @ts-ignore
-  (await import('node:fs')).readFileSync(join(root, 'tools', 'asset_list.json'), 'utf8'),
-);
+const list = JSON.parse(readFileSync(join(root, 'tools', 'asset_list.json'), 'utf8'));
 
 const pub = join(root, 'public');
 let count = 0;

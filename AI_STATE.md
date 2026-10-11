@@ -12,11 +12,17 @@
    repath periódico + ao trocar alvo + se bloqueado.
 5. **Janelas por propósito**: Levels p/ Torre, Settings p/ Rei, character_panel p/ Equipe,
    Inventory só no inventário, popup offline sem grades.
-6. **jogar.bat** na raiz (Windows): checa Node, `npm install` se preciso, sobe o dev
-   server e abre o browser. Pipeline de assets portado p/ Node
-   (`tools/prepare_public_assets.mjs`, lista única em `tools/asset_list.json`);
-   dev server serve assets da raiz (não precisa de public/ no zip).
-   `vercel.json` agora usa o script Node (sem Python).
+6. **jogar.bat** na raiz (Windows): checa Node/npm, instala deps se
+   `node_modules\phaser` ausente, sobe dev server com `--strictPort` (sempre
+   localhost:5173) e abre o browser via `tools/open_browser.ps1` somente quando
+   o servidor responder. Pipeline de assets em Node
+   (`tools/prepare_public_assets.mjs`, lista única `tools/asset_list.json`);
+   dev server serve assets da raiz (zip não precisa de public/).
+7. **Auditoria (revisão 3)**: `tests/assets.test.ts` valida manifesto→disco
+   (60 spritesheets 64×256, folhas GUI, crops dentro dos limites, tileset,
+   cobertura do asset_list.json). Corrigidos: vazamento de listeners state.on
+   nos overlays (unsub no shutdown) e cache de texturas do PixelText agora com
+   teto (250). `@types/node` adicionado; tsconfig types atualizado.
 
 ## Estado atual
 **MVP local (vertical slice) IMPLEMENTADO e jogável em dev (`npm run dev`).**

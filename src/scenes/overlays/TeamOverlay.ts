@@ -24,9 +24,10 @@ export class TeamOverlay extends Phaser.Scene {
 
     bakeCrop(this, 'btn:square', 'ui_buttons', UI.buttons.square);
     this.render();
-    state.on((ev) => {
+    const unsub = state.on((ev) => {
       if (ev === 'team_changed' || ev === 'slot_unlocked' || ev === 'coins_changed') this.render();
     });
+    this.events.once('shutdown', () => unsub());
   }
 
   private T(x: number, y: number, s: string, sc = 1, color?: number) {

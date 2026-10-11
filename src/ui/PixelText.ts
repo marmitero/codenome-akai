@@ -18,8 +18,11 @@ const GLYPH_W = 6;
 const X0 = 1;
 const VARIANT_H = 46;
 
+const CACHE_MAX = 250;
+
 export class PixelFont {
   private glyphs = new Map<string, Rect>();
+  private cacheOrder: string[] = [];
   ready = false;
 
   /** variant 0..6 selects the color style of the alphabet */
@@ -83,6 +86,12 @@ export class PixelFont {
       drawGlyphs(0, 2);
       scene.textures.addCanvas(key, canvas);
       scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.NEAREST);
+      // bounded cache: long idle sessions generate many damage-number strings
+      this.cacheOrder.push(key);
+      while (this.cacheOrder.length > CACHE_MAX) {
+        const old = this.cacheOrder.shift()!;
+        if (scene.textures.exists(old)) scene.textures.remove(old);
+      }
     }
     const img = scene.add.image(x, y, key);
     img.setOrigin(opts.originX ?? 0.5, opts.originY ?? 0.5);
