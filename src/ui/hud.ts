@@ -22,10 +22,11 @@ export function kingBar(scene: Phaser.Scene): HudRefs {
   objs.push(bg, underline);
 
   const king = state.king!;
+  // royal bust portrait (generated art, keyed at boot)
+  const pkey = scene.textures.exists(`king_${king.skin}`) ? `king_${king.skin}` : 'king_m1';
   const portrait = scene.add
-    .sprite(30, 27, `${king.skin === 'male' ? 'hero_male' : 'hero_female'}_idle_sheet`)
-    .setFrame(0)
-    .setScale(0.9)
+    .image(30, 28, pkey)
+    .setScale(0.42)
     .setDepth(41)
     .setScrollFactor(0);
   objs.push(portrait);

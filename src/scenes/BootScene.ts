@@ -1,7 +1,7 @@
 // Boot: asset loading, spritesheet/animation baking, pixel font build, routing.
 
 import Phaser from 'phaser';
-import { SPRITE_SETS, TILESET, DECOR, UI, FRAME, DIRS } from '../config/assets';
+import { SPRITE_SETS, TILESET, DECOR, UI, FRAME, DIRS, KING_PORTRAITS } from '../config/assets';
 import { pixelFont } from '../ui/PixelText';
 import { state, evaluateOfflineProgress } from '../game/session';
 
@@ -33,11 +33,41 @@ export class BootScene extends Phaser.Scene {
     this.load.image('decor_rock1', DECOR.rock1);
     this.load.image('decor_rock2', DECOR.rock2);
     this.load.image('decor_bones', DECOR.bones);
+    this.load.image('ui_levels', UI.levelsSheet);
+    this.load.image('ui_settings', UI.settingsSheet);
+    this.load.image('ui_mainmenu', UI.mainMenuSheet);
+    this.load.image('ui_charpanel', UI.charPanel);
+    for (const p of KING_PORTRAITS) this.load.image(`kingsrc_${p.id}`, p.file);
+  }
+
+  /** Magenta-key + integer downscale (1024/8) the royal busts into crisp 128px portraits. */
+  private bakeKingPortraits() {
+    const SIZE = 128;
+    for (const p of KING_PORTRAITS) {
+      const key = `king_${p.id}`;
+      if (this.textures.exists(key)) continue;
+      const src = this.textures.get(`kingsrc_${p.id}`).getSourceImage() as HTMLImageElement;
+      const canvas = document.createElement('canvas');
+      canvas.width = SIZE;
+      canvas.height = SIZE;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(src, 0, 0, SIZE, SIZE);
+      const img = ctx.getImageData(0, 0, SIZE, SIZE);
+      const d = img.data;
+      for (let i = 0; i < d.length; i += 4) {
+        if (d[i] > 180 && d[i + 1] < 120 && d[i + 2] > 180) d[i + 3] = 0;
+      }
+      ctx.putImageData(img, 0, 0);
+      this.textures.addCanvas(key, canvas);
+      this.textures.get(key).setFilter(Phaser.Textures.FilterMode.NEAREST);
+    }
   }
 
   create() {
     this.bakeAnimations();
-    pixelFont.build(this, '__font_src', 4);
+    this.bakeKingPortraits();
+    pixelFont.build(this, '__font_src', 3);
     state.load();
     evaluateOfflineProgress();
 

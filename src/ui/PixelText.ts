@@ -54,22 +54,33 @@ export class PixelFont {
     const key = `pxt:${scale}:${value}`;
     if (!scene.textures.exists(key)) {
       const upper = value.toUpperCase();
-      const w = Math.max(1, upper.length * PITCH);
+      const w = Math.max(1, upper.length * PITCH + 2);
       const canvas = document.createElement('canvas');
       canvas.width = w;
-      canvas.height = 9;
+      canvas.height = 12;
       const ctx = canvas.getContext('2d')!;
+      ctx.imageSmoothingEnabled = false;
       const src = scene.textures.get('__font_src').getSourceImage() as HTMLImageElement;
-      let px = 0;
-      for (const ch of upper) {
-        const g = this.glyphs.get(ch);
-        if (!g) {
-          if (ch === ' ') px += 5;
-          continue;
+      const drawGlyphs = (ox: number, oy: number) => {
+        let px = 0;
+        for (const ch of upper) {
+          const g = this.glyphs.get(ch);
+          if (!g) {
+            px += ch === ' ' ? 5 : PITCH;
+            continue;
+          }
+          ctx.drawImage(src, g.x, g.y, g.w, g.h, ox + px, oy, g.w, g.h);
+          px += PITCH;
         }
-        ctx.drawImage(src, g.x, g.y, g.w, g.h, px, 1, g.w, g.h);
-        px += PITCH;
-      }
+      };
+      // pass 1: silhouette at +1/+1 turned into a dark drop shadow (readability)
+      drawGlyphs(1, 3);
+      ctx.globalCompositeOperation = 'source-in';
+      ctx.fillStyle = '#140a1e';
+      ctx.fillRect(0, 0, w, 12);
+      ctx.globalCompositeOperation = 'source-over';
+      // pass 2: colored glyphs on top
+      drawGlyphs(0, 2);
       scene.textures.addCanvas(key, canvas);
       scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.NEAREST);
     }

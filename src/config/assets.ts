@@ -129,6 +129,9 @@ export const UI = {
   charPanel: 'free-basic-pixel-art-ui-for-rpg/PNG/character_panel.png',
   iconsSheet: 'free-basic-pixel-art-ui-for-rpg/PNG/Icons.png',
   fontSheet: 'free-basic-pixel-art-ui-for-rpg/PNG/Text1.png',
+  levelsSheet: 'free-basic-pixel-art-ui-for-rpg/PNG/Levels.png',
+  settingsSheet: 'free-basic-pixel-art-ui-for-rpg/PNG/Settings.png',
+  mainMenuSheet: 'free-basic-pixel-art-ui-for-rpg/PNG/Main_menu.png',
 
   buttons: {
     resume: { x: 13, y: 274, w: 56, h: 12 },
@@ -163,8 +166,10 @@ export const UI = {
   icons: {
     coin: { x: 243, y: 115, w: 10, h: 10 },
     diamond: { x: 260, y: 115, w: 9, h: 11 },
-    arrowLeft: { x: 177, y: 113, w: 14, h: 14 },
-    arrowRight: { x: 193, y: 113, w: 14, h: 14 },
+    // bright green arrows from Buttons.png (right-side cluster)
+    arrowUp: { x: 352, y: 290, w: 13, h: 13 },
+    arrowRight: { x: 359, y: 306, w: 9, h: 13 },
+    arrowDown: { x: 355, y: 365, w: 13, h: 13 },
     items: [
       { x: 50, y: 130, w: 12, h: 12 },
       { x: 68, y: 130, w: 9, h: 11 },
@@ -188,7 +193,36 @@ export const UI = {
       { x: 320, y: 144, w: 16, h: 16 },
     ] as Crop[],
   },
+
+  /** Whole window frames — each overlay uses the frame that fits its purpose. */
+  windows: {
+    /** Levels sheet: blank / with 9 baked circles / with circles+arrows+quit */
+    levelsBlank: { sheet: 'ui_levels', x: 7, y: 0, w: 114, h: 133 },
+    levelsCircles: { sheet: 'ui_levels', x: 135, y: 0, w: 114, h: 133 },
+    /** Settings sheet: blank body window (title bar without label) */
+    settingsBlank: { sheet: 'ui_settings', x: 7, y: 0, w: 98, h: 149 },
+    /** Main menu: blank tall window */
+    menuBlank: { sheet: 'ui_mainmenu', x: 96, y: 4, w: 80, h: 168 },
+    /** character_panel row with EMPTY portrait circle + colored bars */
+    charRowEmpty: { sheet: 'ui_charpanel', x: 98, y: 34, w: 84, h: 30 },
+    charRowFull: { sheet: 'ui_charpanel', x: 98, y: 2, w: 84, h: 30 },
+  } as Record<string, Crop & { sheet: string }>,
+
+  /** Interactive circle centers inside levelsCircles window (source px). */
+  levelCircleCenters: [
+    [13, 38], [49, 38], [85, 38],
+    [13, 75], [49, 75], [85, 75],
+    [13, 112], [49, 112], [85, 112],
+  ] as [number, number][],
 };
+
+/** Generated royal bust portraits (bust only, magenta-keyed at boot). */
+export const KING_PORTRAITS = [
+  { id: 'm1', label: 'REI ALDAR', file: 'generated/king_portraits/king_m1.png' },
+  { id: 'm2', label: 'REI BRANDO', file: 'generated/king_portraits/king_m2.png' },
+  { id: 'f1', label: 'RAINHA VYRA', file: 'generated/king_portraits/king_f1.png' },
+  { id: 'f2', label: 'RAINHA ISOLDE', file: 'generated/king_portraits/king_f2.png' },
+];
 
 export const TILESET = {
   cursedGround: 'free-cursed-land-top-down-pixel-art-tileset/PNG/Ground.png',

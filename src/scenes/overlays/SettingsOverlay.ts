@@ -1,8 +1,8 @@
-// King profile + dev-only Debug Mode (master prompt §77 — never for players).
+// King profile window (Settings frame) + dev-only Debug Mode (§77).
 
 import Phaser from 'phaser';
 import { pixelFont } from '../../ui/PixelText';
-import { bakeCrop, panel } from '../../ui/widgets';
+import { bakeCrop, windowFrame } from '../../ui/widgets';
 import { UI } from '../../config/assets';
 import { state, debugEnabled } from '../../game/session';
 import { generateEquipment } from '../../core/equipment';
@@ -10,6 +10,7 @@ import { randomRng } from '../../core/rng';
 import type { Rarity } from '../../core/types';
 
 const RARITIES: Rarity[] = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'celestial'];
+const SCALE = 3;
 
 export class SettingsOverlay extends Phaser.Scene {
   private debugRarity = 0;
@@ -22,29 +23,36 @@ export class SettingsOverlay extends Phaser.Scene {
     const { width: w, height: h } = this.scale;
     this.add.rectangle(w / 2, h / 2, w, h, 0x000000, 0.72).setDepth(80).setInteractive()
       .on('pointerdown', () => this.close());
-    panel(this, w / 2, h * 0.42, 'titled', 3).setDepth(81);
+
+    const winH = 149 * SCALE;
+    const cy = h * 0.46;
+    windowFrame(this, w / 2, cy, 'settingsBlank', SCALE).setDepth(81);
     bakeCrop(this, 'btn:square', 'ui_buttons', UI.buttons.square);
-    this.add.image(w / 2 + 132, h * 0.42 - 138, 'btn:square').setScale(1.2).setDepth(83)
+    this.add.image(w / 2 + (98 * SCALE) / 2 - 15, cy - winH / 2 + 12, 'btn:square').setScale(1.1).setDepth(83)
       .setAlpha(0.01)
       .setInteractive({ useHandCursor: true })
       .on('pointerdown', () => this.close());
 
+    // king portrait on the title bar
     const k = state.king!;
-    let y = h * 0.42 - 100;
+    const pkey = this.textures.exists(`king_${k.skin}`) ? `king_${k.skin}` : 'king_m1';
+    this.add.image(w / 2 - 110, cy - winH / 2 + 12, pkey).setScale(0.3).setDepth(84);
+
+    let y = cy - winH / 2 + 40;
     const T = (s: string, sc = 1, color?: number) => {
       const t = pixelFont.text(this, w / 2, y, s, { scale: sc }).setDepth(85);
       if (color) t.setTint(color);
-      y += sc * 14 + 6;
+      y += sc * 14 + 8;
     };
-    T(`REI ${k.name}`, 2);
-    T(`NIVEL ${k.level}  XP ${k.xp}`, 1);
-    T(`COINS ${k.coins}  DIAMONDS ${k.diamonds}`, 1);
-    T(`VIP ${k.vip ? 'ATIVO' : 'INATIVO'}  TORRE ${k.highestFloor}`, 1);
-    T('SALVE LOCAL ATIVO', 1, 0x8a7f6a);
+    T(`REI ${k.name}`, 2, 0x3a2a1a);
+    T(`NIVEL ${k.level}  XP ${k.xp}`, 1, 0x3a2a1a);
+    T(`COINS ${k.coins}  DIAMONDS ${k.diamonds}`, 1, 0x3a2a1a);
+    T(`VIP ${k.vip ? 'ATIVO' : 'INATIVO'}  TORRE ${k.highestFloor}`, 1, 0x3a2a1a);
+    T('SALVE LOCAL ATIVO', 1, 0x7a6a4a);
 
     if (debugEnabled) {
-      y += 8;
-      T('DEBUG MODE (DEV)', 2, 0xff5555);
+      y += 6;
+      T('DEBUG MODE (DEV)', 2, 0xa03030);
       const row = (label: string, fn: () => void) => {
         const b = this.add.image(w / 2, y, 'btn:square').setScale(1.6).setDepth(85)
           .setInteractive({ useHandCursor: true });

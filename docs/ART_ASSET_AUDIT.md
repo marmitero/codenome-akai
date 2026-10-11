@@ -49,16 +49,35 @@ Inventário REAL gerado na FASE 0 (2026-10-11) com `tools/summarize_packs.py`,
 - Flat walkable: (17,1), (34,4), (3,2), (12,2) — detectados por `full alpha + baixa variância`.
 - Borda/obstáculo "thorn bush": (0,0), (2,0).
 
+## Janelas de GUI — mapeamento por propósito (revisão 2)
+
+Cada overlay usa a moldura adequada, não o painel de inventário para tudo:
+- **Inventário** → `Inventory.png` painel "titled" (grades de slot combinam com mochila).
+- **Equipe** → linhas de `character_panel.png` (círculo de retrato + barras) por slot.
+- **Torre/andares** → `Levels.png` janela com 9 círculos cozinhados + botão p/ andar 10.
+- **Rei/Settings** → `Settings.png` janela blank; retrato do Rei na barra de título.
+- **Popup offline** → `Inventory.png` painel "empty" (sem grades).
+Setas de navegação: setas VERDES de `Buttons.png` (up 352,290 / right 359,306 / down 355,365;
+esquerda = right com flipX), escala 4 — destaque correto.
+
+## Retratos do Rei (gerados, separados dos heróis)
+
+`generated/king_portraits/king_{m1,m2,f1,f2}.png` — bustos pixel-art de realeza
+(2 masculinos, 2 femininos), fundo magenta removido no boot (`bakeKingPortraits`,
+downscale inteiro 1024→128, NEAREST). O Rei NÃO usa sprites de herói (§4).
+
+## Texto / fonte (revisão 2)
+
+Variante tan/dourada (índice 3) do `Text1.png` + drop-shadow escuro de 1px
+cozinhado na textura (2-pass canvas) — legibilidade em fundos claros e escuros.
+
 ## Lacunas (PENDING de arte)
 
 1. **Áudio**: nenhum pack de áudio no repositório → `AUDIO_GUIDELINES.md` registra aquisição futura.
-2. **Bitmap font branca/clara para fundos claros**: variantes existentes são escuras/teal; aceitável por ora.
-3. **Retrato/bust dedicado do Rei**: packs só têm corpos 64×64; usamos frame idle-front como retrato
-   (aceitável §4). Lacuna registrada para arte futura de busto real.
-4. **Bosses**: packs de boss existem (pirate/tribal/4-dir boss, goblin chief) mas usam sequências
+2. **Bosses**: packs de boss existem (pirate/tribal/4-dir boss, goblin chief) mas usam sequências
    grandes; pipeline de conversão para a fase BOSS ainda não implementado.
-5. **Ícones de skill/projéteis**: sem pack de efeitos; feedback atual = flash/tween + números
+3. **Ícones de skill/projéteis**: sem pack de efeitos; feedback atual = flash/tween + números
    (adaptação técnica permitida §60). Documentar geração/aquisição futura.
-6. **Autotiling completo**: usamos flat tiles + bordas bush; autotile real é polish futuro.
+4. **Autotiling completo**: usamos flat tiles + bordas bush; autotile real é polish futuro.
 
 Nenhum placeholder genérico (emoji/gradiente) é usado como arte final.

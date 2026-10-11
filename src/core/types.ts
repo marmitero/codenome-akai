@@ -89,7 +89,8 @@ export interface HeroInstance {
 
 export interface KingState {
   name: string;
-  skin: 'male' | 'female';
+  /** king portrait id (KING_PORTRAITS) */
+  skin: string;
   level: number;
   xp: number;
   coins: number;

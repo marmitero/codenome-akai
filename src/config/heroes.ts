@@ -93,8 +93,6 @@ export const heroDef = (defId: string): HeroDef => {
   return d;
 };
 
-/** King skins: portrait art comes from the base character packs. */
-export const KING_SKINS = [
-  { id: 'male', label: 'Rei Aldar', spriteSet: 'hero_male' },
-  { id: 'female', label: 'Rainha Vyra', spriteSet: 'hero_female' },
-] as const;
+/** King skins: dedicated royal bust portraits (generated/, magenta-keyed).
+ * The King is a meta-character — his art is separate from the hero sprites. */
+export { KING_PORTRAITS as KING_SKINS } from './assets';

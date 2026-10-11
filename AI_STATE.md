@@ -1,6 +1,17 @@
 # AI_STATE — Codenome: AKAI
 
-Última atualização: 2026-10-11 (sessão arena/9008fa86).
+Última atualização: 2026-10-11 (sessão arena/9008fa86, revisão 2).
+
+## Revisão 2 (correções desta sessão)
+1. **Rei separado dos heróis**: 4 retratos gerados (`generated/king_portraits/`),
+   busto apenas, chroma-key magenta no boot; criação do Rei cicla os 4 retratos.
+   Migração de saves antigos ('male'/'female' → m1/f1).
+2. **Setas verdes** do pack GUI (Buttons.png) em escala 4 p/ navegação de criação/escolha.
+3. **Fonte**: variante tan + drop-shadow escuro (2-pass) — texto legível.
+4. **Pathfinding A*** (`core/pathfinding.ts` + testes): herói e mobs contornam rochas;
+   repath periódico + ao trocar alvo + se bloqueado.
+5. **Janelas por propósito**: Levels p/ Torre, Settings p/ Rei, character_panel p/ Equipe,
+   Inventory só no inventário, popup offline sem grades.
 
 ## Estado atual
 **MVP local (vertical slice) IMPLEMENTADO e jogável em dev (`npm run dev`).**

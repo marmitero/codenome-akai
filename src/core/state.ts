@@ -39,6 +39,10 @@ export class GameState {
     const s = this.persistence.load();
     if (s && s.version === SAVE_VERSION) {
       this.king = s.king;
+      // migration: early builds stored 'male'/'female' skins
+      if (this.king && (this.king.skin === 'male' || this.king.skin === 'female')) {
+        this.king.skin = this.king.skin === 'male' ? 'm1' : 'f1';
+      }
       this.heroes = s.heroes ?? {};
       this.chosenInitialHero = s.chosenInitialHero;
       this.team = s.team ?? this.team;
@@ -63,7 +67,7 @@ export class GameState {
   }
 
   // ---------- king ----------
-  createKing(name: string, skin: 'male' | 'female') {
+  createKing(name: string, skin: string) {
     const now = Date.now();
     this.king = {
       name,

@@ -21,7 +21,7 @@ export class KingCreationScene extends Phaser.Scene {
   private skinIndex = 0;
   private nameInput!: HTMLInputElement;
   private errorText: Phaser.GameObjects.Image | null = null;
-  private portrait: Phaser.GameObjects.Sprite | null = null;
+  private portrait: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite | null = null;
 
   constructor() {
     super('king_creation');
@@ -63,10 +63,10 @@ export class KingCreationScene extends Phaser.Scene {
   private redrawPortrait(w: number, h: number) {
     if (this.portrait) this.portrait.destroy();
     const skin = KING_SKINS[this.skinIndex];
+    // dedicated royal bust portrait (generated art — heroes stay separate)
     this.portrait = this.add
-      .sprite(w / 2, h * 0.35, `${skin.spriteSet}_idle_sheet`)
-      .setFrame(0)
-      .setScale(3)
+      .image(w / 2, h * 0.35, `king_${skin.id}`)
+      .setScale(1.7)
       .setDepth(2);
   }
 

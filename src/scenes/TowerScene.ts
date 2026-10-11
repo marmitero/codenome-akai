@@ -9,6 +9,7 @@ import { COMBAT, TOWER, ECONOMY } from '../config/balance';
 import { floorDef } from '../config/floors';
 import { heroDef } from '../config/heroes';
 import { damageFormula } from '../core/battle';
+import { astar, type Point } from '../core/pathfinding';
 import { rollDrop, generateEquipment } from '../core/equipment';
 import { mulberry32, pick, randomRng, type Rng } from '../core/rng';
 import type { CombatStats, SkillDef } from '../core/types';
@@ -33,6 +34,9 @@ interface Mob {
   alive: boolean;
   setName: string;
   name: string;
+  path: Point[];
+  pathKey: string;
+  pathAt: number;
 }
 
 export class TowerScene extends Phaser.Scene {
@@ -231,10 +235,56 @@ export class TowerScene extends Phaser.Scene {
       alive: true,
       setName,
       name: setName.replace('mob_', ''),
+      path: [],
+      pathKey: '',
+      pathAt: 0,
     });
   }
 
   // ---------------- loop ----------------
+  private heroPath: Point[] = [];
+  private heroPathKey = '';
+  private heroPathAt = 0;
+
+  private tileOf(px: number, py: number): Point {
+    return {
+      x: Phaser.Math.Clamp(Math.floor(px / TILE), 0, MAP_W - 1),
+      y: Phaser.Math.Clamp(Math.floor(py / TILE), 0, MAP_H - 1),
+    };
+  }
+
+  /** Follow a tile path; returns heading + whether we were blocked. */
+  private followPath(
+    sprite: Phaser.GameObjects.Sprite,
+    path: Point[],
+    speed: number,
+  ): { dx: number; dy: number; moved: boolean; blocked: boolean } {
+    if (!path.length) return { dx: 0, dy: 0, moved: false, blocked: false };
+    let wp = this.tileCenter(path[0].x, path[0].y);
+    let dx = wp[0] - sprite.x;
+    let dy = wp[1] - sprite.y;
+    if (Math.hypot(dx, dy) < 6) {
+      path.shift();
+      if (!path.length) return { dx, dy, moved: false, blocked: false };
+      wp = this.tileCenter(path[0].x, path[0].y);
+      dx = wp[0] - sprite.x;
+      dy = wp[1] - sprite.y;
+    }
+    const len = Math.hypot(dx, dy) || 1;
+    const nx = sprite.x + (dx / len) * speed;
+    const ny = sprite.y + (dy / len) * speed;
+    let moved = false;
+    if (this.walkable(nx, sprite.y)) {
+      sprite.x = nx;
+      moved = true;
+    }
+    if (this.walkable(sprite.x, ny)) {
+      sprite.y = ny;
+      moved = true;
+    }
+    return { dx, dy, moved, blocked: !moved };
+  }
+
   update(time: number, delta: number) {
     if (this.over) return;
     const speed = 0.11 * delta; // hero px per ms-ish
@@ -256,6 +306,7 @@ export class TowerScene extends Phaser.Scene {
       if (!this.searching && time - this.lastTargetAt > 400) {
         this.showSearching(true);
       }
+      this.heroPath = [];
       this.hero.play(this.animFor('idle', this.dirOf(0, 0)) as string, true);
       return;
     }
@@ -268,9 +319,23 @@ export class TowerScene extends Phaser.Scene {
     const dir = this.dirOf(dx, dy);
 
     if (dist > COMBAT.heroAttackRange) {
-      this.moveEntity(this.hero, dx, dy, speed);
-      this.hero.play(this.animFor('walk', dir), true);
+      const goal = this.tileOf(target.sprite.x, target.sprite.y);
+      const gKey = `${goal.x},${goal.y}`;
+      if (
+        this.heroPathKey !== gKey ||
+        this.heroPath.length === 0 ||
+        time - this.heroPathAt > 700
+      ) {
+        this.heroPathKey = gKey;
+        this.heroPathAt = time;
+        this.heroPath = astar(this.grid, this.tileOf(this.hero.x, this.hero.y), goal);
+      }
+      const mv = this.followPath(this.hero, this.heroPath, speed);
+      if (mv.blocked) this.heroPathAt = 0; // force repath next frame
+      const wdir = mv.moved ? this.dirOf(mv.dx, mv.dy) : dir;
+      this.hero.play(this.animFor('walk', wdir), true);
     } else {
+      this.heroPath = [];
       this.hero.play(this.animFor('attack', dir), true);
       if (time >= this.heroNextAttackAt) {
         this.heroNextAttackAt = time + COMBAT.heroAttackCooldownMs;
@@ -278,7 +343,7 @@ export class TowerScene extends Phaser.Scene {
       }
     }
 
-    // mobs AI
+    // mobs AI — path around obstacles toward the hero
     for (const m of this.mobs) {
       if (!m.alive) continue;
       const mdx = this.hero.x - m.sprite.x;
@@ -286,15 +351,26 @@ export class TowerScene extends Phaser.Scene {
       const mdist = Math.hypot(mdx, mdy);
       const mdir = this.dirOf(mdx, mdy);
       if (mdist <= COMBAT.enemyAttackRange) {
+        m.path = [];
         m.sprite.play(this.animForSet(m.setName, 'attack', mdir), true);
         if (time >= m.nextAttackAt) {
           m.nextAttackAt = time + COMBAT.enemyAttackCooldownMs;
           this.enemyAttack(m, time);
         }
       } else if (mdist < COMBAT.enemyAggroRange) {
-        this.moveEntity(m.sprite, mdx, mdy, espeed);
-        m.sprite.play(this.animForSet(m.setName, 'walk', mdir), true);
+        const goal = this.tileOf(this.hero.x, this.hero.y);
+        const gKey = `${goal.x},${goal.y}`;
+        if (m.pathKey !== gKey || m.path.length === 0 || time - m.pathAt > 800) {
+          m.pathKey = gKey;
+          m.pathAt = time;
+          m.path = astar(this.grid, this.tileOf(m.sprite.x, m.sprite.y), goal);
+        }
+        const mv = this.followPath(m.sprite, m.path, espeed);
+        if (mv.blocked) m.pathAt = 0;
+        const wdir = mv.moved ? this.dirOf(mv.dx, mv.dy) : mdir;
+        m.sprite.play(this.animForSet(m.setName, 'walk', wdir), true);
       } else {
+        m.path = [];
         m.sprite.play(this.animForSet(m.setName, 'idle', mdir), true);
       }
       m.bar.setPosition(m.sprite.x, m.sprite.y - 42);
@@ -316,14 +392,6 @@ export class TowerScene extends Phaser.Scene {
   }
   private animForSet(set: string, anim: string, dir: Dir) {
     return `${set}_${anim}_${dir}`;
-  }
-
-  private moveEntity(obj: Phaser.GameObjects.Sprite, dx: number, dy: number, speed: number) {
-    const len = Math.hypot(dx, dy) || 1;
-    const nx = obj.x + (dx / len) * speed;
-    const ny = obj.y + (dy / len) * speed;
-    if (this.walkable(nx, obj.y)) obj.x = nx;
-    if (this.walkable(obj.x, ny)) obj.y = ny;
   }
 
   // ---------------- combat ----------------

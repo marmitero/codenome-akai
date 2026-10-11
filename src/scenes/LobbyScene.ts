@@ -94,7 +94,7 @@ export class LobbyScene extends Phaser.Scene {
   private showOfflinePopup(w: number, h: number) {
     const r = offlineReport!;
     const dim = this.add.rectangle(w / 2, h / 2, w, h, 0x000000, 0.7).setDepth(60);
-    const p = panel(this, w / 2, h * 0.4, 'titled', 3).setDepth(61);
+    const p = panel(this, w / 2, h * 0.4, 'empty', 3).setDepth(61);
     const mins = Math.floor(r.cappedSeconds / 60);
     const t1 = pixelFont.text(this, w / 2, h * 0.33, 'PROGRESSO OFFLINE', { scale: 2 }).setDepth(62);
     const t2 = pixelFont.text(this, w / 2, h * 0.4, `${mins} MIN LONGE`, { scale: 1 }).setDepth(62);

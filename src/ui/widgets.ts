@@ -93,27 +93,23 @@ export function icon(
   return scene.add.image(x, y, key).setScale(scale);
 }
 
+/** Prominent green navigation arrow from the GUI pack (left = flipped right). */
 export function arrowButton(
   scene: Phaser.Scene,
   x: number,
   y: number,
   dir: 'left' | 'right',
   onClick: () => void,
-  scale = 3,
+  scale = 4,
 ): Phaser.GameObjects.Image {
-  const cropKey = dir === 'left' ? 'arrowLeft' : 'arrowRight';
-  const crop = UI.icons[cropKey];
-  const key = `icon:${cropKey}`;
-  if (!scene.textures.exists(key)) {
-    const src = scene.textures.get('ui_inventory').getSourceImage() as HTMLImageElement;
-    const canvas = document.createElement('canvas');
-    canvas.width = crop.w;
-    canvas.height = crop.h;
-    canvas.getContext('2d')!.drawImage(src, crop.x, crop.y, crop.w, crop.h, 0, 0, crop.w, crop.h);
-    scene.textures.addCanvas(key, canvas);
-    scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.NEAREST);
-  }
+  const crop = UI.icons.arrowRight;
+  const key = 'icon:arrowGreen';
+  bakeCrop(scene, key, 'ui_buttons', crop);
   const btn = scene.add.image(x, y, key).setScale(scale).setInteractive({ useHandCursor: true });
+  if (dir === 'left') btn.setFlipX(true);
+  btn.on('pointerdown', () => btn.setScale(scale * 0.85));
+  btn.on('pointerup', () => btn.setScale(scale));
+  btn.on('pointerout', () => btn.setScale(scale));
   btn.on('pointerdown', onClick);
   return btn;
 }
@@ -136,6 +132,20 @@ export function itemIcon(
     scene.textures.addCanvas(key, canvas);
     scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.NEAREST);
   }
+  return scene.add.image(x, y, key).setScale(scale);
+}
+
+/** Full window frame from the GUI pack (each overlay picks its proper frame). */
+export function windowFrame(
+  scene: Phaser.Scene,
+  x: number,
+  y: number,
+  kind: string,
+  scale = 3,
+): Phaser.GameObjects.Image {
+  const def = UI.windows[kind];
+  const key = `win:${kind}`;
+  bakeCrop(scene, key, def.sheet, def);
   return scene.add.image(x, y, key).setScale(scale);
 }
 
