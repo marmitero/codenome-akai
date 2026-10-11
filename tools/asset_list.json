@@ -1,0 +1,32 @@
+{
+  "spriteDirs": [
+    "free-swordsman-1-3-level-pixel-top-down-sprite-character/PNG/Swordsman_lvl1/With_shadow",
+    "free-base-4-direction-male-character-pixel-art/PNG/Sword/With_shadow",
+    "free-base-4-direction-female-character-pixel-art/PNG/Sword/With_shadow",
+    "free-vampire-4-direction-pixel-character-sprite-pack/PNG/Vampires1/With_shadow",
+    "free-vampire-4-direction-pixel-character-sprite-pack/PNG/Vampires2/With_shadow",
+    "free-slime-mobs-pixel-art-top-down-sprite-pack/PNG/Slime1/With_shadow",
+    "free-slime-mobs-pixel-art-top-down-sprite-pack/PNG/Slime2/With_shadow",
+    "free-slime-mobs-pixel-art-top-down-sprite-pack/PNG/Slime3/With_shadow",
+    "free-top-down-orc-game-character-pixel-art/PNG/Orc1/With_shadow",
+    "free-predator-plant-mobs-pixel-art-pack/PNG/Plant1/With_shadow"
+  ],
+  "singleFiles": [
+    "free-basic-pixel-art-ui-for-rpg/PNG/Buttons.png",
+    "free-basic-pixel-art-ui-for-rpg/PNG/Inventory.png",
+    "free-basic-pixel-art-ui-for-rpg/PNG/character_panel.png",
+    "free-basic-pixel-art-ui-for-rpg/PNG/Icons.png",
+    "free-basic-pixel-art-ui-for-rpg/PNG/Text1.png",
+    "free-basic-pixel-art-ui-for-rpg/PNG/Levels.png",
+    "free-basic-pixel-art-ui-for-rpg/PNG/Settings.png",
+    "free-basic-pixel-art-ui-for-rpg/PNG/Main_menu.png",
+    "free-cursed-land-top-down-pixel-art-tileset/PNG/Ground.png",
+    "free-rocks-and-stones-top-down-pixel-art/PNG/Objects_separately/Rock1_3.png",
+    "free-rocks-and-stones-top-down-pixel-art/PNG/Objects_separately/Rock1_4.png",
+    "free-cursed-land-top-down-pixel-art-tileset/PNG/Objects_separetely/Bones_shadow1_1.png",
+    "generated/king_portraits/king_m1.png",
+    "generated/king_portraits/king_m2.png",
+    "generated/king_portraits/king_f1.png",
+    "generated/king_portraits/king_f2.png"
+  ]
+}

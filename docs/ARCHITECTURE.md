@@ -27,8 +27,10 @@ ao sair de cena e em `visibilitychange`.
 
 ## Assets
 Originais nunca são renomeados/movidos (§61). `src/config/assets.ts` é o manifesto
-com caminhos estáveis; `tools/prepare_public_assets.py` copia SOMENTE os arquivos
-referenciados para `public/` (pipeline reproduzível p/ build Vercel).
+com caminhos estáveis; `tools/prepare_public_assets.mjs` (lista única em
+`tools/asset_list.json`, espelho `.py`) copia SOMENTE os arquivos referenciados para
+`public/` — necessário apenas p/ `vite build`/Vercel; o dev server serve da raiz.
+Windows local: `jogar.bat` na raiz instala e sobe tudo sem Python.
 Baking em runtime: spritesheets 64×64 + animações por direção (down/left/right/up),
 crops de GUI e bitmap font via canvas NEAREST.
 
