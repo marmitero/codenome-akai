@@ -1,0 +1,22 @@
+{
+  "name": "codenome-akai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Codenome: AKAI — 2D Idle / Auto-Battle / Loot RPG for browser (Phaser 3 + TypeScript + Vite)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5173",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 5173",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "phaser": "^3.85.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "vite": "^5.4.8",
+    "vitest": "^2.1.1"
+  }
+}
