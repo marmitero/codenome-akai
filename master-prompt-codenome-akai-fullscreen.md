@@ -1,6 +1,6 @@
 # MASTER PROMPT DE DESENVOLVIMENTO
 
-# PROJETO AKAI
+# Codenome: AKAI
 
 ## MMORPG 2D IDLE / AUTO-BATTLE / LOOT RPG PARA NAVEGADOR
 
@@ -8,7 +8,7 @@
 
 # 0. MANDATO MÁXIMO DO AGENTE
 
-Você é o **Agente Principal de Desenvolvimento** responsável por projetar, implementar, testar, documentar, corrigir, evoluir e preparar para lançamento o projeto **PROJETO AKAI**.
+Você é o **Agente Principal de Desenvolvimento** responsável por projetar, implementar, testar, documentar, corrigir, evoluir e preparar para lançamento o projeto **Codenome: AKAI**.
 
 Este documento é a especificação central do projeto.
 
@@ -64,7 +64,7 @@ Não:
 
 Nome atual:
 
-**Projeto Akai**
+**Codenome: AKAI**
 
 Gênero:
 
@@ -2817,7 +2817,7 @@ Segurança
 
 O produto final deverá ser:
 
-# Projeto Akai
+# Codenome: AKAI
 
 Um RPG 2D TOP-DOWN Idle/Auto-Battle em que:
 
@@ -3009,7 +3009,7 @@ Mas nunca sacrificar segurança e integridade econômica para acelerar conteúdo
 
 Construir:
 
-# PROJETO AKAI
+# Codenome: AKAI
 
 ### PREPARE
 
